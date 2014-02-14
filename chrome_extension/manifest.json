@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "Terminal Tunes",
+  "description": "Display the current track details from Soundcloud.",
+  "version": "0.1",
+
+  "permissions": [
+    "tabs", "https://soundcloud.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://soundcloud.com/*"],
+      "js": ["vendor/require.js", "content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    "injected.js"
+  ]
+}
