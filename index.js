@@ -2,8 +2,8 @@
 
 var express = require('express')
   , humanizeDuration = require('humanize-duration')
-  //, process = require('process')
-  , keypress = require('keypress');
+  , keypress = require('keypress')
+  , colors = require('colors');
 
 var app = express()
   , currentProgress = 0
@@ -32,12 +32,14 @@ app.post('/progress', function(req, res){
     , progress = req.body['progress']
     , label = req.body['label']
     , title = req.body['title']
-    , bar = label + ': ' + title + '\n[' + ('   ' + progress.substr(0, progress.indexOf('.') || progress.length)).slice(-3) + '%] '
+    , bar = label.green + ': ' + title + '\n\n'
     , i;
   for (i = 0; i < 100; i++) {
-    bar += (i < progress) ? '|' : ' ';
+    bar += (i < progress) ? '|'.cyan : ' ';
   }
-  bar += '[ ' + humanizeDuration(1000 * Math.floor(current / 1000)) + '  ]';
+  bar += '\n[' + ('   ' + progress.substr(0, progress.indexOf('.') || progress.length)).slice(-3) + '% ]'
+      +  ' [ '.red.bold + humanizeDuration(1000 * Math.floor(current / 1000)).yellow.bold + '  ]'.red.bold;
+
   currentProgress = progress;
   currentBar = bar;
   res.send(bar);
@@ -45,7 +47,7 @@ app.post('/progress', function(req, res){
 });
 
 app.listen(3000);
-console.log('express is listening on 3000');
+// console.log('express is listening on 3000');
 
 function updateDisplay() {
   console.log('\033[2J');

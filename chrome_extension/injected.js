@@ -7,12 +7,12 @@ var timer = setInterval(function() {
 
   // Load the most recent song
   var song = player.history[player.historyCursor].sound
-  , controller = song.audio.controller
-  , position = {};
+    , controller = song.audio.controller
+    , position = {};
 
   // If Soundcloud is not currently playing, return
   if (controller._state !== 'playing') return;
-  
+
   // Aggregate some basic information about the state of the track
   position = {
       current: controller._currentPosition,
@@ -23,7 +23,7 @@ var timer = setInterval(function() {
   };
 
   // Push the track info over to another computer
-  $.post('http://localhost:3000/progress', position, function (data) {
+  $.post('http://10.0.0.81:3000/progress', position, function (data) {
     // Log the response, which should be a progress bar from the terminal
     console.log(data);
   });
