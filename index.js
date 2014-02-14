@@ -2,14 +2,15 @@
 
 var express = require('express')
   , humanizeDuration = require('humanize-duration')
-  , process = require('process')
+  //, process = require('process')
   , keypress = require('keypress');
 
 var app = express()
   , currentProgress = 0
   , currentBar = ''
   , notice = { message: '', remainder: 0 }
-  , stdin = process.openStdin();
+  , stdin = process.openStdin()
+  , controlsEnabled = false;
 
 app.configure(function () {
     app.use(function(req, res, next) {
@@ -53,39 +54,44 @@ function updateDisplay() {
     notice.remainder--;
   }
   console.log(currentBar);
-  console.log('<DISABLED> Controls: [b]ack [n]ext [p]lay/[p]ause: </DISABLED>');
+  if (controlsEnabled === true) {
+    console.log('<DISABLED> Controls: [b]ack [n]ext [p]lay/[p]ause: </DISABLED>');
+  }
 }
 
-keypress(process.stdin);
-process.stdin.on('keypress', function (chunk, key) {
-  if (!key) return;
-  if (key && key.ctrl && key.name == 'c') process.exit();
+if (Boolean(stdin.isTTY) === true) {
+  stdin.setRawMode(true);
+  stdin.resume();
+  controlsEnabled = true;
 
-  switch (key.name) {
-    case 'b':
-      notice = { message: 'Back has not been implemented.', remainder: 5 };
-      break;
+  keypress(stdin);
+  stdin.on('keypress', function (chunk, key) {
+    if (!key) return;
+    if (key && key.ctrl && key.name == 'c') process.exit();
 
-    case 'n':
-      notice = { message: 'Next has not been implemented.', remainder: 5 };
-      break;
+    switch (key.name) {
+      case 'b':
+        notice = { message: 'Back has not been implemented.', remainder: 5 };
+        break;
 
-    case 'p':
-      notice = { message: 'Play/Pause has not been implemented.', remainder: 5 };
-      break;
+      case 'n':
+        notice = { message: 'Next has not been implemented.', remainder: 5 };
+        break;
 
-    case 'q':
-      process.exit();
-      break;
+      case 'p':
+        notice = { message: 'Play/Pause has not been implemented.', remainder: 5 };
+        break;
 
-    default:
-      //notice = { message: key.name + ' has not been implemented.', remainder: 5 };
-  }
+      case 'q':
+        process.exit();
+        break;
 
-  updateDisplay();
+      default:
+        //notice = { message: key.name + ' has not been implemented.', remainder: 5 };
+    }
 
-  return;
-});
+    updateDisplay();
 
-process.stdin.setRawMode(true);
-process.stdin.resume();
+    return;
+  });
+}
