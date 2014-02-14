@@ -1,6 +1,8 @@
 // Require Soundcloud's Play Manager
 var player = require('lib/play-manager');
 
+var socket = io.connect('http://localhost:3000');
+
 var timer = setInterval(function() {
   // If nothing has been played yet, return
   if (player.historyCursor === -1) return;
@@ -23,8 +25,5 @@ var timer = setInterval(function() {
   };
 
   // Push the track info over to another computer
-  $.post('http://10.0.0.81:3000/progress', position, function (data) {
-    // Log the response, which should be a progress bar from the terminal
-    console.log(data);
-  });
+  socket.emit('progress', position);
 }, 1000);

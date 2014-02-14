@@ -5,4 +5,5 @@ function appendScript(scriptFile) {
   document.documentElement.appendChild(script); // run the script
 }
 
+appendScript('vendor/socket.io.js');
 appendScript('injected.js');

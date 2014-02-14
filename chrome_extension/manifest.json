@@ -11,10 +11,11 @@
   "content_scripts": [
     {
       "matches": ["https://soundcloud.com/*"],
-      "js": ["vendor/require.js", "content.js"]
+      "js": ["vendor/require.js", "vendor/socket.io.js", "content.js"]
     }
   ],
   "web_accessible_resources": [
+    "vendor/socket.io.js",
     "injected.js"
   ]
 }
