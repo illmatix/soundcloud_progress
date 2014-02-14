@@ -8,18 +8,19 @@
   },
   "contributors": [
     {
-        "name": "Chad Payne"
-      , "email": "chadpayne@gmail.com"
+      "name": "Chad Payne",
+      "email": "chadpayne@gmail.com"
     },
     {
-        "name": "Spenser Jones"
-      , "email": "hello@spenserj.com"
+      "name": "Spenser Jones",
+      "email": "hello@spenserj.com"
     }
   ],
   "license": "MIT",
   "devDependencies": {
     "express": "~3.4.8",
     "humanize-duration": "~0.6.0",
-    "keypress": "~0.2.1"
+    "keypress": "~0.2.1",
+    "socket.io": "~0.9.16"
   }
 }
