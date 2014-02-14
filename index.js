@@ -1,11 +1,15 @@
 #! /usr/bin/env node
 
 var express = require('express')
-  , humanizeDuration = require('humanize-duration');
+  , humanizeDuration = require('humanize-duration')
+  , process = require('process')
+  , keypress = require('keypress');
 
 var app = express()
   , currentProgress = 0
-  , currentBar = '';
+  , currentBar = ''
+  , notice = { message: '', remainder: 0 }
+  , stdin = process.openStdin();
 
 app.configure(function () {
     app.use(function(req, res, next) {
@@ -32,7 +36,7 @@ app.post('/progress', function(req, res){
   for (i = 0; i < 100; i++) {
     bar += (i < progress) ? '|' : ' ';
   }
-  bar += '\n[ ' + humanizeDuration(1000 * Math.floor(current / 1000)) + '  ]';
+  bar += '[ ' + humanizeDuration(1000 * Math.floor(current / 1000)) + '  ]';
   currentProgress = progress;
   currentBar = bar;
   res.send(bar);
@@ -44,5 +48,44 @@ console.log('express is listening on 3000');
 
 function updateDisplay() {
   console.log('\033[2J');
+  if (notice.message && notice.remainder > 0) {
+    currentBar = 'NOTICE: ' + notice.message + '\n\n' + currentBar;
+    notice.remainder--;
+  }
   console.log(currentBar);
+  console.log('<DISABLED> Controls: [b]ack [n]ext [p]lay/[p]ause: </DISABLED>');
 }
+
+keypress(process.stdin);
+process.stdin.on('keypress', function (chunk, key) {
+  if (!key) return;
+  if (key && key.ctrl && key.name == 'c') process.exit();
+
+  switch (key.name) {
+    case 'b':
+      notice = { message: 'Back has not been implemented.', remainder: 5 };
+      break;
+
+    case 'n':
+      notice = { message: 'Next has not been implemented.', remainder: 5 };
+      break;
+
+    case 'p':
+      notice = { message: 'Play/Pause has not been implemented.', remainder: 5 };
+      break;
+
+    case 'q':
+      process.exit();
+      break;
+
+    default:
+      //notice = { message: key.name + ' has not been implemented.', remainder: 5 };
+  }
+
+  updateDisplay();
+
+  return;
+});
+
+process.stdin.setRawMode(true);
+process.stdin.resume();
