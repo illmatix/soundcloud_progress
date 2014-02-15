@@ -3,17 +3,46 @@ var player = require('lib/play-manager');
 
 var socket = io.connect('http://localhost:3000');
 
-var timer = setInterval(function() {
+socket.on('control', function (data) {
+  switch (data.action) {
+    case 'playpause':
+      var song = getCurrentTrack();
+      if (isPlaying() === true) {
+        return player.pauseCurrent();
+      } else {
+        return (song === false) ? player.playNext() : player.playCurrent();
+      }
+      break;
+
+    case 'next':
+      return player.playNext();
+      break;
+
+    case 'back':
+      return player.playPrev();
+      break;
+  }
+});
+
+function getCurrentTrack() {
   // If nothing has been played yet, return
-  if (player.historyCursor === -1) return;
+  if (player.historyCursor === -1) return false;
+  return player.history[player.historyCursor].sound;
+}
+
+function isPlaying() {
+  var song = getCurrentTrack();
+  return (song === false) ? false : song.audio._isPlaying;
+}
+
+var timer = setInterval(function() {
+  // If Soundcloud is not currently playing, return
+  if (isPlaying() === false) return;
 
   // Load the most recent song
-  var song = player.history[player.historyCursor].sound
+  var song = getCurrentTrack()
     , controller = song.audio.controller
     , position = {};
-
-  // If Soundcloud is not currently playing, return
-  if (controller._state !== 'playing') return;
 
   // Aggregate some basic information about the state of the track
   position = {

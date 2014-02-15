@@ -54,14 +54,17 @@ if (Boolean(stdin.isTTY) === true) {
 
     switch (key.name) {
       case 'b':
+        io.sockets.emit('control', { action: 'back' });
         notice = { message: 'Back has not been implemented.', remainder: 5 };
         break;
 
       case 'n':
+        io.sockets.emit('control', { action: 'next' });
         notice = { message: 'Next has not been implemented.', remainder: 5 };
         break;
 
       case 'p':
+        io.sockets.emit('control', { action: 'playpause' });
         notice = { message: 'Play/Pause has not been implemented.', remainder: 5 };
         break;
 
